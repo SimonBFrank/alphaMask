@@ -3,11 +3,24 @@ import matplotlib.pyplot as plt
 import random
 import cv2
 
-#NOTES
-#1. Debug image boundary conditions, some images display as black
-#2. Complete Sequence object for DataGenerator
-#3. Add helper to translate bounding box annotations for YOLO format
-#4. Add brightness transformation to augmentation scheme
+from PIL import Image, ImageEnhance
+
+class Sequence(object):
+    def __init__(self, augmentations, probs = 1):
+        self.augmentations = augmentations
+        self.probs = probs
+
+    def __call__(self, img, bbox):
+        for i, augmentation in enumerate(self.augmentations):
+            if type(self.probs) == list:
+                prob = self.probs[i]
+            else:
+                prob = self.probs
+
+            if random.random() < prob:
+                img, bbox = augmentation(img, bbox)
+            
+        return img, bbox
 
 class Reflection(object):
     def __init__(self, p=0.5):
@@ -32,6 +45,8 @@ class Scale(object):
 
     def __call__(self, img, bbox):
         img_shape = img.shape
+        img = np.uint8(img * 255)
+
         if self.fixed_aspect:
             h_scale = 1 + random.uniform(*self.scale)
             v_scale = h_scale
@@ -39,7 +54,6 @@ class Scale(object):
             h_scale = 1 + random.uniform(*self.scale)
             v_scale = 1 + random.uniform(*self.scale)
 
-        print(img)
         img = cv2.resize(img, None, fx = h_scale, fy = v_scale ,)
 
         bbox[:, :4] *= [h_scale, v_scale, h_scale, v_scale]
@@ -60,6 +74,7 @@ class Translation(object):
 
     def __call__(self, img, bbox):
         img_shape = img.shape
+        img = np.uint8(img * 255)
         
         if self.fixed_aspect:
             h_translation = random.uniform(*self.translate)
@@ -111,6 +126,17 @@ class Rotation(object):
         bbox = rotated_bbox
         bbox = trim_bbox(bbox, [0, 0, image_shape[1], image_shape[0]], 0.25)
 
+        return img, bbox
+
+class Brightness(object):
+    def __init__(self, param = 0.5):
+        self.param = param
+
+    def __call__(self, img, bbox):
+        img = Image.fromarray(np.uint8(img * 255))
+        filter = ImageEnhance.Brightness(img)
+        img = filter.enhance(self.param)
+        img = np.array(img)
         return img, bbox
 
 ####### HELPERS #######
@@ -199,21 +225,28 @@ def fill_bbox(corners):
     return bbox
 
 ##########
-img = np.load('processed/images/maksssksksss0.npy', allow_pickle=True)
-targets = np.load('processed/annotations/maksssksksss0.npy', allow_pickle=True)
+img = np.load('processed/images/maksssksksss10.npy', allow_pickle=True)
+targets = np.load('processed/annotations/maksssksksss10.npy', allow_pickle=True)
 
 bbox = format_bbox(targets)
 
-horizontal_flip = Reflection(1)
-img, bbox = horizontal_flip(img, bbox)
+#horizontal_flip = Reflection(1)
+#img, bbox = horizontal_flip(img, bbox)
 
-scale = Scale(1)
-img, bbox = scale(img, bbox)
+#scale = Scale()
+#img, bbox = scale(img, bbox)
 
 #translation = Translation(0.5)
 #img, bbox = translation(img, bbox)
 
-rotation = Rotation(20)
-img, bbox = rotation(img, bbox)
+#rotation = Rotation(20)
+#img, bbox = rotation(img, bbox)
+
+transforms = Sequence([Brightness(), Reflection(1), Scale(), Translation(), Rotation()], probs=1)
+img, bbox = transforms(img, bbox)
+
+#brightness = Brightness()
+#img, bbox = brightness(img, bbox)
+
 plt.imshow(display_bbox(img, bbox))
 plt.show()
