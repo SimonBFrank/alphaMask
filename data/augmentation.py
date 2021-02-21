@@ -11,6 +11,7 @@ class Sequence(object):
         self.probs = probs
 
     def __call__(self, img, bbox):
+        bbox = format_bbox(bbox)
         for i, augmentation in enumerate(self.augmentations):
             if type(self.probs) == list:
                 prob = self.probs[i]
@@ -27,6 +28,7 @@ class Reflection(object):
         self.p = p
 
     def __call__(self, img, bbox):
+        #bbox = format_bbox(bbox)
         img_center = np.array(img.shape[:2])[::-1]/2
         img_center = np.hstack((img_center, img_center))
         if random.random() < self.p:
@@ -44,6 +46,7 @@ class Scale(object):
         self.fixed_aspect = fixed_aspect
 
     def __call__(self, img, bbox):
+        #bbox = format_bbox(bbox)
         img_shape = img.shape
         img = np.uint8(img * 255)
 
@@ -73,6 +76,7 @@ class Translation(object):
         self.fixed_aspect = fixed_aspect
 
     def __call__(self, img, bbox):
+        #bbox = format_bbox(bbox)
         img_shape = img.shape
         img = np.uint8(img * 255)
         
@@ -102,6 +106,7 @@ class Rotation(object):
         self.angle = (-angle, angle)
 
     def __call__(self, img, bbox):
+        #bbox = format_bbox(bbox)
         angle = random.uniform(*self.angle)
         image_shape = img.shape
         h_center = image_shape[1] // 2
@@ -133,6 +138,7 @@ class Brightness(object):
         self.param = param
 
     def __call__(self, img, bbox):
+        #bbox = format_bbox(bbox)
         img = Image.fromarray(np.uint8(img * 255))
         filter = ImageEnhance.Brightness(img)
         img = filter.enhance(self.param)
@@ -228,25 +234,25 @@ def fill_bbox(corners):
 img = np.load('processed/images/maksssksksss10.npy', allow_pickle=True)
 targets = np.load('processed/annotations/maksssksksss10.npy', allow_pickle=True)
 
-bbox = format_bbox(targets)
+#bbox = format_bbox(targets)
 
 #horizontal_flip = Reflection(1)
-#img, bbox = horizontal_flip(img, bbox)
+#img, bbox = horizontal_flip(img, targets)
 
 #scale = Scale()
-#img, bbox = scale(img, bbox)
+#img, bbox = scale(img, targets)
 
 #translation = Translation(0.5)
-#img, bbox = translation(img, bbox)
+#img, bbox = translation(img, targets)
 
 #rotation = Rotation(20)
-#img, bbox = rotation(img, bbox)
+#img, bbox = rotation(img, targets)
 
 transforms = Sequence([Brightness(), Reflection(1), Scale(), Translation(), Rotation()], probs=1)
-img, bbox = transforms(img, bbox)
+img, bbox = transforms(img, targets)
 
 #brightness = Brightness()
-#img, bbox = brightness(img, bbox)
+#img, bbox = brightness(img, targets)
 
 plt.imshow(display_bbox(img, bbox))
 plt.show()
