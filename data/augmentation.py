@@ -30,7 +30,6 @@ class Reflection(object):
         self.p = p
 
     def __call__(self, img, bbox):
-        print('REFLECTION')
         img_center = np.array(img.shape[:2])[::-1]/2
         img_center = np.hstack((img_center, img_center))
         if random.random() < self.p:
@@ -48,7 +47,6 @@ class Scale(object):
         self.fixed_aspect = fixed_aspect
 
     def __call__(self, img, bbox):
-        print("SCALE")
         img_shape = img.shape
 
         if self.fixed_aspect:
@@ -77,7 +75,6 @@ class Translation(object):
         self.fixed_aspect = fixed_aspect
 
     def __call__(self, img, bbox):
-        print('TRANSLATION')
         img_shape = img.shape
         
         if self.fixed_aspect:
@@ -106,7 +103,6 @@ class Rotation(object):
         self.angle = (-angle, angle)
 
     def __call__(self, img, bbox):
-        print("ROTATION")
         angle = random.uniform(*self.angle)
         image_shape = img.shape
         h_center = image_shape[1] // 2
@@ -138,8 +134,6 @@ class Brightness(object):
         self.param = param
 
     def __call__(self, img, bbox):
-        #bbox = format_bbox(bbox)
-        print("BRIGHTNESS")
         img = Image.fromarray(img)
         filter = ImageEnhance.Brightness(img)
         img = filter.enhance(self.param)
