@@ -10,6 +10,4 @@ mkdir ./alphaMask/labels/validation
 
 python export_data.py
 
-cp -r ./alphaMask/ ./../../yolov5/data
-
 rm -r ./__pycache__/
