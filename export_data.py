@@ -17,19 +17,17 @@ def export_data(training_data, validation_data, img_export_dir, label_export_dir
         if (im.dtype != 'uint8'):
             im = np.array(im * 255).astype('uint8')
 
-        for i in range(data_increase):
-            try:
-                im_transform, target_transform = transforms(im, target)
-            except:
-                print("passed in:",im.shape, target)
-            im_transform = Image.fromarray(im_transform)
-        
-            img_filename = "training" + str(image_number) + '_' + str(i) + ".jpg"
-            im_transform.save(img_export_dir + "training/" + img_filename)
+        target = format_bbox(target)
+        target = format_yolo(target, im)
 
-            label_filename = "training" + str(image_number) + '_' + str(i) + ".txt"
-            np.savetxt(label_export_dir+"training/"+label_filename, target_transform, fmt='%1.6f')
+        im = Image.fromarray(im)
 
+        img_filename = "training" + str(image_number) + ".jpg"
+        im.save(img_export_dir + "training/" + img_filename)
+
+
+        label_filename = "training" + str(image_number) + ".txt"
+        np.savetxt(label_export_dir+"training/"+label_filename, target, fmt='%1.6f')
 
         image_number += 1
 
@@ -58,8 +56,8 @@ def export_data(training_data, validation_data, img_export_dir, label_export_dir
 if (__name__ == '__main__'):
     img_dir = '../processed/images/'
     label_dir = '../processed/annotations/'
-    img_export_dir = './alphaMask/images/'
-    label_export_dir = './alphaMask/labels/'
+    img_export_dir = './data/images/'
+    label_export_dir = './data/labels/'
 
     imgs = [np.load(img_dir+ img_path) for img_path in os.listdir(img_dir)]
     labels = [np.load(label_dir+label_path, allow_pickle=True) for label_path in os.listdir(label_dir)]
