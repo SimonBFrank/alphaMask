@@ -22,8 +22,8 @@ def find_faces():
                 gray_img = gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 faces = faceCascade.detectMultiScale(
                     gray_img,
-                    scaleFactor=1.1,
-                    minNeighbors=5
+                    scaleFactor=1.3,
+                    minNeighbors=10
                 )
                 if (len(faces) == 1):
                     incorrect_faces_filename.append(file)
