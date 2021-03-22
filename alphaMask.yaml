@@ -1,7 +1,7 @@
-download: bash ./../alphaMask/data/export_data.sh
+#download: bash ./../alphaMask/data/export_data.sh
 
-train: data/alphaMask/images/training
-val: data/alphaMask/images/validation
+train: data/data/images/training
+val: data/data/images/validation
 
 # number of classes
 nc: 3
