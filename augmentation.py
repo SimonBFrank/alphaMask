@@ -227,7 +227,7 @@ def fill_bbox(corners):
 
 def format_yolo(bbox, img):
     array = []
-    for x1, y1, x2, y2, c in bbox:
+    for [x1, y1, x2, y2], c in bbox:
         img_size = img.shape
 
         dw = (1.0/img_size[1])

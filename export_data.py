@@ -7,7 +7,7 @@ from augmentation import *
 random.seed(0)
 
 def export_data(training_data, validation_data, img_export_dir, label_export_dir, data_increase=5):
-    transforms = Sequence([Brightness(), Reflection(1), Scale(), Translation(), Rotation()], probs=0.25)
+    #transforms = Sequence([Brightness(), Reflection(1), Scale(), Translation(), Rotation()], probs=0.25)
 
     image_number = 1
     for sample in training_data:
@@ -17,7 +17,6 @@ def export_data(training_data, validation_data, img_export_dir, label_export_dir
         if (im.dtype != 'uint8'):
             im = np.array(im * 255).astype('uint8')
 
-        target = format_bbox(target)
         target = format_yolo(target, im)
 
         im = Image.fromarray(im)
@@ -38,7 +37,6 @@ def export_data(training_data, validation_data, img_export_dir, label_export_dir
         if (im.dtype != 'uint8'):
             im = np.array(im * 255).astype('uint8')
 
-        target = format_bbox(target)
         target = format_yolo(target, im)
 
         im = Image.fromarray(im)

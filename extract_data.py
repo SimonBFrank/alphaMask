@@ -52,7 +52,7 @@ def get_bbox(objs):
         height = ymax - ymin
         width = xmax - xmin
 
-        bbox_arr.append([anchor, width, height])
+        bbox_arr.append([xmin, ymin, xmax, ymax])
 
     return bbox_arr
 
@@ -65,7 +65,6 @@ def generate_target(annotation_path):
     labels_arr = get_class(objs)
 
     return filename, [(bbox, label) for bbox, label in zip(bbox_arr, labels_arr)]
-
 
 def process_data(img_dir, annotation_dir, processed_img_dir, processed_annotations_dir):
     # Find all the files in annotation and image directories

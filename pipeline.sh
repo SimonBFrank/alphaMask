@@ -1,8 +1,9 @@
 python select_IMFD.py
 python select_AMFD.py
+python select_scenes.py
 
-IMG_DIRS="../Kaggle_data/images/,../imfd_selected/imgs/,../amfd_selected/imgs/"
-ANNOTATION_DIRS="../Kaggle_data/annotations/,../imfd_selected/labels/,../amfd_selected/labels/"
+IMG_DIRS="../Kaggle_data/images/,../imfd_selected/imgs/,../amfd_selected/imgs/,../scene_selected/imgs/"
+ANNOTATION_DIRS="../Kaggle_data/annotations/,../imfd_selected/labels/,../amfd_selected/labels/,../scene_selected/labels/"
 
 PROCESSED_IMG_DIR="../processed/images/"
 PROCESSED_ANNOTATIONS_DIR="../processed/annotations/"

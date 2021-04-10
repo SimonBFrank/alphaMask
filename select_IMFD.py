@@ -35,12 +35,6 @@ def find_faces():
     return incorrect_faces_filename, incorrect_faces_imgs, incorrect_faces_bbox
 
 def create_xml(filename, img_shape, bbox, save_loc):
-    
-    xmin = bbox[0][0]
-    ymin = bbox[0][1]
-    xmax = bbox[0][0] + bbox[0][2]
-    ymax = bbox[0][1] + bbox[0][3]
-
     root = ET.Element("annotation")
     ET.SubElement(root, "filename").text = str(filename)
 
@@ -49,13 +43,18 @@ def create_xml(filename, img_shape, bbox, save_loc):
     ET.SubElement(doc, "height").text = str(img_shape[1])
     ET.SubElement(doc, "depth").text = str(3)
 
-    doc = ET.SubElement(root, "object")
-    ET.SubElement(doc, "name").text = "mask_weared_incorrect"
-    bbox = ET.SubElement(doc, "bndbox")
-    ET.SubElement(bbox, "ymin").text = str(ymin)
-    ET.SubElement(bbox, "xmin").text = str(xmin)
-    ET.SubElement(bbox, "ymax").text = str(ymax)
-    ET.SubElement(bbox, "xmax").text = str(xmax)
+    for box in bbox:
+        xmin = box[0]
+        ymin = box[1]
+        xmax = box[0] + box[2]
+        ymax = box[1] + box[3]
+        doc = ET.SubElement(root, "object")
+        ET.SubElement(doc, "name").text = "mask_weared_incorrect"
+        bbox = ET.SubElement(doc, "bndbox")
+        ET.SubElement(bbox, "ymin").text = str(ymin)
+        ET.SubElement(bbox, "xmin").text = str(xmin)
+        ET.SubElement(bbox, "ymax").text = str(ymax)
+        ET.SubElement(bbox, "xmax").text = str(xmax)
 
 
     tree = ET.ElementTree(root)
