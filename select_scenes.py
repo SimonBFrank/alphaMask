@@ -2,6 +2,7 @@ import cv2
 import xml.etree.cElementTree as ET
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 def find_faces():
     NUMBER_FILES = 3000
@@ -18,6 +19,9 @@ def find_faces():
             if filepath.endswith(".jpg") and filepath.find('Copy') == -1:
                 img = plt.imread(filepath)
                 img = img[:,:,::-1]
+                new_height = int(400 * np.random.normal(1, 0.1, (1,))[0])
+                new_width = int(500 * np.random.normal(1, 0.1, (1,))[0])
+                img = cv2.resize(img, (new_width, new_height))
                 incorrect_faces_filename.append(file)
                 incorrect_faces_imgs.append(img)
                 incorrect_faces_bbox.append([])

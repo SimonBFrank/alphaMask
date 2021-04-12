@@ -1,6 +1,7 @@
 import cv2
 import xml.etree.cElementTree as ET
 import os
+import numpy as np
 
 def find_faces():
     NUMBER_FILES = 3000
@@ -19,7 +20,10 @@ def find_faces():
 
             if filepath.endswith(".jpg") and filepath.find('Copy') == -1:
                 img = cv2.imread(filepath)
-                gray_img = gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                new_height = int(400 * np.random.normal(1, 0.1, (1,))[0])
+                new_width = int(500 * np.random.normal(1, 0.1, (1,))[0])
+                img = cv2.resize(img, (new_width, new_height))
+                gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 faces = faceCascade.detectMultiScale(
                     gray_img,
                     scaleFactor=1.3,
